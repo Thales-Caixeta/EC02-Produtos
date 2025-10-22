@@ -1,1 +1,371 @@
-<!doctype html>
+<!DOCTYPE html>
+<html lang="pt-br">
+  <head>
+    <meta charset="utf-8" />
+    <title>EC02 — Gestão de Funcionários</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <style>
+      :root {
+        --bg: #0f1115;
+        --panel: #151823;
+        --muted: #9aa4b2;
+        --text: #e6e9ef;
+        --brand: #6e8efb;
+        --brand2: #a777e3;
+        --ok: #22c55e;
+        --warn: #ef4444;
+        --chip: #232838;
+        --border: #222633;
+        --shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+        --r: 14px;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      html,
+      body {
+        height: 100%;
+      }
+      body {
+        margin: 0;
+        background: radial-gradient(
+            1200px 600px at 10% -10%,
+            #171b28 0%,
+            #0f1115 55%
+          ),
+          var(--bg);
+        color: var(--text);
+        font: 15px/1.5 system-ui, Segoe UI, Roboto, Arial, sans-serif;
+      }
+      .container {
+        max-width: 1100px;
+        margin: 32px auto;
+        padding: 0 16px;
+      }
+      header {
+        display: flex;
+        gap: 12px;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 18px;
+      }
+      .title {
+        font-weight: 700;
+        font-size: 20px;
+        background: linear-gradient(90deg, var(--brand), var(--brand2));
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+      }
+      .pill {
+        padding: 2px 10px;
+        border-radius: 999px;
+        background: var(--chip);
+        color: var(--muted);
+        border: 1px solid var(--border);
+      }
+      .grid {
+        display: grid;
+        gap: 16px;
+      }
+      @media (min-width: 900px) {
+        .grid {
+          grid-template-columns: 1.1fr 0.9fr;
+        }
+      }
+
+      .card {
+        background: linear-gradient(180deg, #171b26 0%, #121521 100%);
+        border: 1px solid var(--border);
+        border-radius: var(--r);
+        box-shadow: var(--shadow);
+      }
+      .card > .hd {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 14px 16px;
+        border-bottom: 1px solid var(--border);
+      }
+      .card > .bd {
+        padding: 16px;
+      }
+
+      label {
+        display: block;
+        margin: 6px 0 6px 2px;
+        color: var(--muted);
+        font-size: 0.92rem;
+      }
+      input,
+      select {
+        width: 100%;
+        padding: 12px;
+        border-radius: 12px;
+        border: 1px solid var(--border);
+        background: #0e111a;
+        color: var(--text);
+        outline: none;
+        transition: 0.15s;
+      }
+      input:focus,
+      select:focus {
+        border-color: #2d3a57;
+        box-shadow: 0 0 0 3px rgba(110, 142, 251, 0.17);
+      }
+      .row {
+        display: grid;
+        gap: 12px;
+      }
+      @media (min-width: 720px) {
+        .row {
+          grid-template-columns: repeat(2, 1fr);
+        }
+      }
+
+      .actions {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        margin-top: 10px;
+      }
+      .btn {
+        padding: 10px 14px;
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        cursor: pointer;
+        background: #121624;
+        color: var(--text);
+        transition: 0.15s;
+        font-weight: 600;
+      }
+      .btn:hover {
+        transform: translateY(-1px);
+      }
+      .btn-primary {
+        background: linear-gradient(90deg, var(--brand), var(--brand2));
+        border-color: transparent;
+      }
+      .btn-ghost {
+        background: #0f1320;
+      }
+      .btn-edit {
+        background: #1b2a4a;
+      }
+      .btn-danger {
+        background: #3a171b;
+      }
+
+      .toolbar {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+      }
+      .toolbar .grow {
+        flex: 1;
+        min-width: 200px;
+      }
+
+      .table-wrap {
+        max-height: 420px;
+        overflow: auto;
+        border-radius: 0 0 var(--r) var(--r);
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+      th,
+      td {
+        padding: 12px 10px;
+        border-bottom: 1px solid var(--border);
+        vertical-align: middle;
+      }
+      thead th {
+        position: sticky;
+        top: 0;
+        background: #151a27;
+        z-index: 1;
+        text-align: left;
+        color: var(--muted);
+        font-weight: 600;
+        cursor: pointer;
+      }
+      tbody tr:hover {
+        background: #111522;
+      }
+      td .chip {
+        background: var(--chip);
+        padding: 2px 8px;
+        border-radius: 999px;
+        border: 1px solid var(--border);
+        color: #cbd5e1;
+        font-size: 0.86rem;
+      }
+
+      .pager {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        justify-content: flex-end;
+        padding: 12px 16px;
+        border-top: 1px solid var(--border);
+      }
+      .pager span {
+        color: var(--muted);
+      }
+
+      .toast {
+        position: fixed;
+        right: 18px;
+        bottom: 18px;
+        display: flex;
+        gap: 10px;
+        align-items: center;
+        background: #0e121d;
+        border: 1px solid var(--border);
+        color: var(--text);
+        padding: 12px 14px;
+        border-radius: 12px;
+        box-shadow: var(--shadow);
+        transform: translateY(20px);
+        opacity: 0;
+        pointer-events: none;
+      }
+      .toast.show {
+        animation: pop 0.25s ease forwards;
+      }
+      @keyframes pop {
+        to {
+          transform: translateY(0);
+          opacity: 1;
+        }
+      }
+      .ok {
+        color: #22c55e;
+      }
+      .warn {
+        color: #f87171;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <header>
+        <div class="title">EC02 — Sistema de Gestão de Funcionários</div>
+        <span class="pill">HTML • JS • Docker (Nginx)</span>
+      </header>
+
+      <div class="grid">
+        <!-- formulário -->
+        <section class="card">
+          <div class="hd"><strong>Cadastro e Edição</strong></div>
+          <div class="bd">
+            <input type="hidden" id="id" />
+            <div class="row">
+              <div>
+                <label for="nome">Nome</label
+                ><input id="nome" type="text" placeholder="Ex.: Rebert" />
+              </div>
+              <div>
+                <label for="idade">Idade</label
+                ><input id="idade" type="number" min="0" placeholder="22" />
+              </div>
+              <div>
+                <label for="cargo">Cargo</label
+                ><input id="cargo" type="text" placeholder="Dev Frontend" />
+              </div>
+              <div>
+                <label for="salario">Salário R$</label
+                ><input
+                  id="salario"
+                  type="number"
+                  min="0"
+                  step="0.01"
+                  placeholder="6500"
+                />
+              </div>
+            </div>
+            <div class="actions">
+              <button id="btnCadastrar" class="btn btn-primary">
+                Cadastrar
+              </button>
+              <button
+                id="btnAtualizar"
+                class="btn btn-primary"
+                style="display: none"
+              >
+                Atualizar
+              </button>
+              <button id="btnCancelar" class="btn btn-ghost">Cancelar</button>
+            </div>
+          </div>
+        </section>
+
+        <!-- relatórios -->
+        <section class="card">
+          <div class="hd"><strong>Relatórios rápidos</strong></div>
+          <div class="bd">
+            <div class="toolbar">
+              <input
+                id="q"
+                class="grow"
+                type="search"
+                placeholder="Buscar por nome..."
+              />
+              <select id="fCargo">
+                <option value="">Todos os cargos</option>
+              </select>
+              <button id="btnLimparFiltro" class="btn">Limpar filtros</button>
+            </div>
+
+            <div class="actions" style="margin-top: 12px">
+              <button id="btnSalarioMaior5k" class="btn">Salário > 5000</button>
+              <button id="btnMediaSalarial" class="btn">Média salarial</button>
+              <button id="btnCargosUnicos" class="btn">Cargos únicos</button>
+              <button id="btnNomesUpper" class="btn">Nomes em maiúsculo</button>
+              <button id="btnLimparRel" class="btn">Limpar</button>
+            </div>
+            <div
+              id="relatorio"
+              style="margin-top: 12px; color: var(--muted)"
+            ></div>
+          </div>
+        </section>
+      </div>
+
+      <!-- tabela -->
+      <section class="card" style="margin-top: 16px">
+        <div class="hd">
+          <strong>Funcionários</strong>
+          <span class="pill">Total <span id="totalPill">0</span></span>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th data-sort="id">#ID</th>
+                <th data-sort="nome">Nome</th>
+                <th data-sort="idade">Idade</th>
+                <th data-sort="cargo">Cargo</th>
+                <th data-sort="salario">Salário</th>
+                <th style="width: 170px">Ações</th>
+              </tr>
+            </thead>
+            <tbody id="tbody"></tbody>
+          </table>
+        </div>
+        <div class="pager">
+          <button id="prev" class="btn">«</button>
+          <span id="pageInfo">1/1</span>
+          <button id="next" class="btn">»</button>
+        </div>
+      </section>
+    </div>
+
+    <div id="toast" class="toast">
+      <span id="toastIcon">•</span><span id="toastMsg">Mensagem</span>
+    </div>
+    <script src="src/script.js"></script>
+  </body>
+</html>

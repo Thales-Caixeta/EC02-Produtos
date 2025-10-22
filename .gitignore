@@ -1,1 +1,34 @@
-# ignorar
+# IDEs e editores
+.vscode/
+.idea/
+
+# Sistema
+.DS_Store
+Thumbs.db
+
+# Logs e temporários
+*.log
+*.tmp
+
+# Node / Build
+node_modules/
+dist/
+build/
+
+# Python (se usar futuramente)
+.venv/
+__pycache__/
+*.pyc
+
+# Java (se usar futuramente)
+target/
+bin/
+out/
+.gradle/
+.mvn/
+
+# Outros
+.env
+.env.*
+docs/
+tests/
